@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surat Cinta Elegan</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Georgia', serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+            transition: background-color 0.5s ease;
+        }
+        
+        body.letter-open {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            position: relative;
+            transition: transform 0.5s ease;
+        }
+        
+        .header {
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeIn 1.5s forwards 0.5s;
+        }
+        
+        .header h1 {
+            color: #4a5568;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: normal;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .header p {
+            color: #718096;
+            font-size: 1.2rem;
+        }
+        
+        .envelope-section {
+            position: relative;
+            margin-bottom: 50px;
+            z-index: 20;
+        }
+        
+        .envelope-wrapper {
+            position: relative;
+            margin: 0 auto;
+            width: 340px;
+            height: 240px;
+        }
+        
+        .envelope {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            transition: transform 0.5s ease;
+        }
+        
+        .envelope:hover {
+            transform: translateY(-5px);
+        }
+        
+        .envelope-front {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #f8f6f2, #f1ece0);
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            z-index: 2;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .envelope-flap {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #f1ece0, #e8e2d2);
+            border-radius: 8px;
+            transform-origin: top;
+            transition: transform 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            z-index: 3;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            clip-path: polygon(0 0, 100% 0, 50% 50%);
+            border-top: 1px solid #e2e8f0;
+            border-left: 1px solid #e2e8f0;
+            border-right: 1px solid #e2e8f0;
+        }
+        
+        .envelope-content {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            pointer-events: none;
+            padding-bottom: 30px;
+        }
+        
+        .envelope-address {
+            color: #4a5568;
+            font-size: 16px;
+            text-align: center;
+            font-style: italic;
+            margin-bottom: 10px;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+        
+        .envelope-line {
+            width: 60%;
+            height: 1px;
+            background: #e2e8f0;
+            margin: 5px 0;
+        }
+        
+        .envelope-heart {
+            color: #a0aec0;
+            font-size: 24px;
+            margin-top: 8px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .letter-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+        }
+        
+        .letter-container.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .letter {
+            background: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.5s ease;
+            border: 1px solid #e2e8f0;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .letter-container.visible .letter {
+            transform: scale(1);
+        }
+        
+        .letter-content {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease 0.3s;
+        }
+        
+        .letter-container.visible .letter-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .letter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px dashed #e2e8f0;
+        }
+        
+        .letter-title {
+            color: #4a5568;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+        
+        .letter-body {
+            color: #4a5568;
+            line-height: 1.7;
+            margin-bottom: 25px;
+            font-size: 16px;
+            padding: 15px;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        
+        .letter-body p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        .letter-closing {
+            text-align: right;
+            margin-top: 25px;
+            color: #4a5568;
+        }
+        
+        .signature {
+            font-family: 'Dancing Script', cursive;
+            font-size: 28px;
+            color: #4a5568;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+        
+        .click-instruction {
+            margin-top: 30px;
+            color: #718096;
+            font-weight: 600;
+            font-size: 16px;
+            opacity: 0;
+            animation: fadeIn 1.5s forwards 1.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 10px 20px;
+            border-radius: 50px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .floating-element {
+            position: absolute;
+            opacity: 0;
+            font-size: 20px;
+            pointer-events: none;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+            50% { transform: translateY(-20px) rotate(10deg); opacity: 1; }
+            100% { transform: translateY(-40px) rotate(0deg); opacity: 0; }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .envelope-wrapper {
+                width: 300px;
+                height: 210px;
+            }
+            
+            .letter {
+                width: 90%;
+                padding: 30px;
+            }
+            
+            .letter-title {
+                font-size: 1.6rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .envelope-wrapper {
+                width: 260px;
+                height: 180px;
+            }
+            
+            .letter {
+                width: 95%;
+                padding: 25px;
+            }
+            
+            .letter-title {
+                font-size: 1.4rem;
+            }
+            
+            .letter-body {
+                font-size: 14px;
+            }
+            
+            .signature {
+                font-size: 24px;
+            }
+            
+            .envelope-address {
+                font-size: 14px;
+            }
+            
+            .envelope-content {
+                padding-bottom: 20px;
+            }
+        }
+        
+        .decoration {
+            position: absolute;
+            font-size: 24px;
+            color: #cbd5e0;
+            z-index: 0;
+            animation: floatElement 6s infinite ease-in-out;
+        }
+        
+        @keyframes floatElement {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+        
+        .letter-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #f8f9fa;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 101;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .letter-close-btn i {
+            color: #4a5568;
+            font-size: 14px;
+        }
+        
+        .sticker {
+            position: absolute;
+            font-size: 24px;
+            z-index: 1;
+            animation: stickerFloat 4s infinite ease-in-out;
+        }
+        
+        @keyframes stickerFloat {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(5deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+        
+        .sticker-1 {
+            top: 10%;
+            left: 5%;
+            font-size: 30px;
+            animation-delay: 0.5s;
+        }
+        
+        .sticker-2 {
+            top: 15%;
+            right: 5%;
+            font-size: 28px;
+            animation-delay: 1s;
+        }
+        
+        .sticker-3 {
+            bottom: 15%;
+            left: 8%;
+            font-size: 32px;
+            animation-delay: 1.5s;
+        }
+        
+        .sticker-4 {
+            bottom: 20%;
+            right: 6%;
+            font-size: 30px;
+            animation-delay: 2s;
+        }
+        
+        .envelope-pattern {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.3) 2px, transparent 2px),
+                radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.3) 2px, transparent 2px);
+            background-size: 30px 30px;
+            z-index: 1;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            z-index: 99;
+            cursor: pointer;
+            display: none;
+        }
+        
+        .letter-container.visible ~ .overlay {
+            display: block;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Georgia&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Letter for you </h1>
+            <p>Long letter...</p>
+        </div>
+        
+        <div class="envelope-section">
+            <div class="envelope-wrapper">
+                <div class="envelope" id="envelope">
+                    <div class="envelope-front">
+                        <div class="envelope-pattern"></div>
+                        <div class="envelope-content">
+                            <div class="envelope-address">To my dear Hafshah</div>
+                            <div class="envelope-line"></div>
+                            <div class="envelope-heart">✉️</div>
+                        </div>
+                    </div>
+                    <div class="envelope-flap" id="envelope-flap">
+                        <!-- Stamp dihilangkan sesuai permintaan -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="letter-container" id="letter-container">
+            <div class="letter">
+                <div class="letter-close-btn" id="close-btn">
+                    <i class="fas fa-times"></i>
+                </div>
+                <div class="letter-content">
+                    <div class="letter-header">
+                        <div class="letter-title">Dear Hafshah</div>
+                    </div>
+                    
+                    <div class="letter-body">
+                        <p>I feel like a complete failure—failed to make you happy, failed to make you feel truly loved. It feels sad, but at least I tried.</p>
+                        <p>I know you're probably facing a lot right now: friendships, the future, maybe even your own inner struggles. But I believe you're strong and can get through it. Stay strong. If you ever feel lonely, I'm here—always supporting you, always wanting you to be happy and smile every moment, looking forward to all your accomplishments, and wanting to hear every story, whether it's about sadness, happiness, or hardship. I don't know who you love; maybe you love someone else. But whoever it is, if it can make you happy, then I hope you can be with that person.</p>
+                        <p>Even though we feel more distant now and we're not together as often, that doesn't mean I've stopped caring. Honestly, this might be because I'm starting to feel like you don't need me anymore and are slowly pulling away. At first, I tried to deny it, but somehow, slowly, as I noticed your behavior, I felt like it might be true. I don't blame you for that, it's not your fault that you eventually started to get bored with me/our relationship. I think it's normal in a relationship when someone gets bored. And I realized that I couldn't force you to stay close/be with me because I thought it would really bother you, so because of that thought, I finally decided to slowly start to distance myself from you. Not because I wanted to, but because I was afraid that my presence would make you unhappy and that I would only become trash that would continue to bother you.</p> 
+                        <p>At that time, I felt that if I continued to force myself to stay by your side, it would only make me feel like trash. Honestly, I regret what happened between us, even if I were allowed, I wanted to continue talking and being with you forever. But that's impossible, right?.</p>
+                        <p>See you when our fates meet again. I miss you too, love you. ♡</p>
+                    </div>
+                    
+                    <div class="letter-closing">
+                        <p>For you,</p>
+                        <div class="signature" id="signature">Mongi</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="overlay" id="overlay"></div>
+        
+        <p class="click-instruction">
+            <i class="fas fa-mouse-pointer"></i> Klik pada amplop untuk membuka
+        </p>
+        
+        <div class="floating-elements" id="floating-elements"></div>
+        
+        <!-- Stiker -->
+        <div class="sticker sticker-1">😺</div>
+        <div class="sticker sticker-2">🐾</div>
+        <div class="sticker sticker-3">✨</div>
+        <div class="sticker sticker-4">❤️</div>
+        
+        <!-- Elemen dekorasi -->
+        <div class="decoration" style="top: 10%; left: 5%;">✦</div>
+        <div class="decoration" style="top: 15%; right: 10%;">✧</div>
+        <div class="decoration" style="bottom: 20%; left: 15%;">✦</div>
+        <div class="decoration" style="bottom: 30%; right: 5%;">✧</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const envelope = document.getElementById('envelope');
+            const envelopeFlap = document.getElementById('envelope-flap');
+            const letterContainer = document.getElementById('letter-container');
+            const floatingElements = document.getElementById('floating-elements');
+            const signature = document.getElementById('signature');
+            const closeBtn = document.getElementById('close-btn');
+            const overlay = document.getElementById('overlay');
+            const body = document.body;
+            
+            // Tanyakan nama pengirim
+            const senderName = prompt('Siapa nama kamu? (opsional)') || 'Mongi';
+            signature.textContent = senderName;
+            
+            // Efek saat amplop diklik
+            let isOpen = false;
+            envelope.addEventListener('click', function() {
+                if (!isOpen) {
+                    openEnvelope();
+                }
+            });
+            
+            // Tombol tutup
+            closeBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                closeEnvelope();
+            });
+            
+            // Tutup saat klik overlay
+            overlay.addEventListener('click', function() {
+                closeEnvelope();
+            });
+            
+            // Tutup saat tekan ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && isOpen) {
+                    closeEnvelope();
+                }
+            });
+            
+            function openEnvelope() {
+                // Buka amplop
+                envelopeFlap.style.transform = 'rotateX(180deg)';
+                letterContainer.classList.add('visible');
+                body.classList.add('letter-open');
+                isOpen = true;
+                
+                // Buat elemen mengambang
+                createFloatingElements();
+            }
+            
+            function closeEnvelope() {
+                // Tutup amplop
+                envelopeFlap.style.transform = 'rotateX(0deg)';
+                letterContainer.classList.remove('visible');
+                body.classList.remove('letter-open');
+                isOpen = false;
+            }
+            
+            // Fungsi untuk membuat elemen mengambang
+            function createFloatingElements() {
+                const elements = ['✦', '✧', '🐾', '😺'];
+                const colors = ['#cbd5e0', '#adb5bd', '#a0aec0', '#e2e8f0'];
+                
+                for (let i = 0; i < 12; i++) {
+                    const element = document.createElement('div');
+                    element.className = 'floating-element';
+                    element.textContent = elements[Math.floor(Math.random() * elements.length)];
+                    element.style.left = Math.random() * 100 + 'vw';
+                    element.style.fontSize = (18 + Math.random() * 20) + 'px';
+                    element.style.color = colors[Math.floor(Math.random() * colors.length)];
+                    element.style.animation = `float ${3 + Math.random() * 2}s ease-in-out forwards`;
+                    element.style.animationDelay = Math.random() * 2 + 's';
+                    
+                    floatingElements.appendChild(element);
+                    
+                    // Hapus elemen setelah animasi selesai
+                    setTimeout(() => {
+                        if (element.parentNode) {
+                            element.remove();
+                        }
+                    }, 5000);
+                }
+            }
+            
+            // Tambahkan efek hover pada amplop
+            envelope.addEventListener('mouseenter', () => {
+                if (!isOpen) {
+                    envelope.style.transform = 'translateY(-5px)';
+                }
+            });
+            
+            envelope.addEventListener('mouseleave', () => {
+                if (!isOpen) {
+                    envelope.style.transform = 'translateY(0)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
